@@ -1,0 +1,24 @@
+######################################################################
+######################################################################
+# monitoring settings
+Monitoring:
+  # plot type (streamlit or matplotlib)
+  PlotType: matplotlib
+
+  # plot data length
+  DataLength: 30
+
+# serial port settings
+Serial:
+  # serial port name
+  port: COM4
+
+  # device baudrate
+  baudrate: 115200
+
+  # timeout [s]
+  timeout[s]: 1
+
+  # logging file
+  logpath: "auto"
+######################################################################

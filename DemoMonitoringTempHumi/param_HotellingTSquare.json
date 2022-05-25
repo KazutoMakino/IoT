@@ -1,0 +1,16 @@
+{
+    "mean": 49.94556546586982,
+    "variance": 60.61671251466801,
+    "alpha": 0.99,
+    "df": 1.0,
+    "threshold": 7.879438576622417,
+    "memo": "Hotelling T-squared distribution",
+    "timestamp": "2022/01/21-14:15:40.041308",
+    "sourcedir": "traindata",
+    "sourcefiles": [
+        "20220118180523357086.txt",
+        "20220118192914980961.txt",
+        "20220119092720689483.txt",
+        "20220119122429859779.txt"
+    ]
+}

@@ -1,0 +1,60 @@
+<h1>DemoMonitoringTempHumi</h1>
+<p>居室内雰囲気について，温湿度センサにて取得したデータを M5Stack BASIC を用いて usb 接続した PC へデータ送信し，PC 側で温湿度と異常検知を web アプリにてリアルタイムでモニタリングします．</p>
+<hr />
+<h2>Demonstration</h2>
+<p><code>movie/demo.mp4</code> をご覧ください．</p>
+<h2>Description</h2>
+<p>IoT デバイスの一種である M5Stack BASIC を用いて，約 1 秒間おきに温湿度センサ SHT35-I2C (GROVE) から得られた居室内雰囲気の温度／湿度データを M5Stack のモニタに表示させ，かつ，このデータの M5Stack 側シリアル出力を usb 接続された PC にて取得し，PC 側の streamlit を用いた web アプリにて温湿度の波形と，湿度のみについて正常か異常かを表示させるためのプログラム群です．</p>
+<p>以下に，コードとディレクトリの一覧と説明を記載します．</p>
+<ul>
+<li><code>data/</code>: <code>real_time_monitoring.py</code> にて取得した温度／湿度データ保存先ディレクトリ</li>
+<li><code>movie/</code>: デモンストレーション用の .mp4 を保存しているディレクトリ</li>
+<li><code>traindata/</code>: <code>real_time_monitoring.py</code> にて異常検知に用いるための教師データを格納しているディレクトリ</li>
+<li><code>anomaly_detection.py</code>: 異常検知アルゴリズムのモジュール</li>
+<li><code>eda.ipynb</code>: 異常検知アルゴリズム検討のために，<code>traindata/</code> にあるデータに対する探索的データ分析ノートブック</li>
+<li><code>param_HotellingTSquare.json</code>: 異常検知アルゴリズムにて用いるホテリング T2 法におけるパラメータを保存した json ファイル</li>
+<li><code>README.md / README.html</code>: <code>DemoMonitoringTempHumi/</code> の説明を行うこのファイル</li>
+<li><code>real_time_monitoring.py</code>: センサにて取得した温度と湿度をリアルタイムにグラフをプロットしたり異常検知したりするモニタリングソフト</li>
+<li><code>requirements.txt</code>: <code>real_time_monitoring.py</code> を動作させるために必要な Python のサードパーティライブラリ名と各バージョンの一覧</li>
+<li><code>serial_monitor.py</code>: PC と usb 接続された IoT デバイスに対してシリアル通信を行い，IoT デバイスのシリアル出力を PC 側から取得するためのモジュール</li>
+<li><code>settings.yml</code>: <code>real_time_monitoring.py</code> 用の設定ファイル</li>
+<li><code>temp_humi.py</code>: IoT デバイスに書き込む，初めに wi-fi 通信で日本の標準時刻を取得し，SHT35-I2C (GROVE) から温度と湿度を取得してタイムスタンプ付きで LCD／シリアル出力させる micropython プログラム</li>
+<li><code>test_anomaly_detection.py</code>: <code>anomaly_detection.py</code> のテストコード</li>
+<li><code>trial_training.ipynb</code>: 異常検知アルゴリズム検討のために，<code>traindata/</code> にあるデータに対して試験的に異常検知モデルを試したノートブック</li>
+</ul>
+<h2>Requirement</h2>
+<p>以下の環境において動作を確認済みです．</p>
+<ul>
+<li>windows 10 64-bit, Python v3.7 / v3.8</li>
+<li>M5Stack BASIC (micropython v1.18)</li>
+<li>PC にて動作させるモニタリングソフト側は <code>requirements.txt</code> を参照</li>
+<li>IoT デバイス (M5Stack) 側は <code>micropython v1.18</code></li>
+</ul>
+<h2>Installation</h2>
+<p>PC の OS は windows 10，IoT デバイスは <a href="https://m5stack.com/">M5Stack BASIC</a>，温湿度センサは GROVE の <a href="https://www.seeedstudio.com/Grove-I2C-High-Accuracy-Temp-Humi-Sensor-SHT35.html">SHT35-I2C</a> であることを前提に，以下記載いたします．</p>
+<ol>
+<li><a href="https://www.python.org/downloads/">Python 公式 web サイト</a> からバージョン 3.7 以上の Python を PC にインストール</li>
+<li><code>requirements.txt</code> 記載のライブラリを pip インストール（オフライン環境や社内プロキシ環境下へのインストールは<a href="https://slash-z.com/install-python-pkgs-in-proxy/">こちら</a>をご覧ください）</li>
+<li>M5Stack BASIC を PC に接続した時に，搭載しているマイクロコントローラ: ESP32 が PC 側にて認識できるように，デバイスドライバ（リンク: <a href="https://jp.silabs.com/developers/usb-to-uart-bridge-vcp-drivers">https://jp.silabs.com/developers/usb-to-uart-bridge-vcp-drivers</a>）を PC にインストールする</li>
+<li>インストール後，PC に M5Stack を接続し，<code>コントロールパネル</code> → <code>デバイスとプリンター</code> → <code>デバイス マネージャー</code> 画面にて，ツリーの <code>ポート（COM と LPT）</code> を展開し，<code>Silicon Labs CP210x USB to UART Bridge (COM?)</code> が表示されていることを確認する．この <code>(COM?)</code> において <code>?</code> は PC 環境によって異なる番号が入り，後で用いる．</li>
+<li>M5Burner を<a href="https://shop.m5stack.com/pages/download">ここ</a> からインストール，.zip を展開し <code>M5Burner.exe</code> を実行</li>
+<li>M5Burner で COM を手順 4 にて確認した COM を選択，Baudrate を 115200 とし，右上の <code>Erase</code> を押して初期化</li>
+<li>完了したら，<code>Configuration</code> をクリックし，UIFlow Config ウィンドウにて，Wifi の SSID と Password を設定し <code>Save</code> をクリック</li>
+<li><code>CORE</code> タブから <code>UIFLOW (CORE)</code> を <code>Download</code> し，完了後 <code>Burn</code> をクリックすることで，M5Stack に UIflow と micropython がインストールされる</li>
+<li>M5Stack と温湿度センサ SHT35-I2C を GROVE ケーブルで接続する</li>
+<li>pip install した <code>adafruit-ampy</code> を用いて，PC 側のターミナルにて <code>ampy -p {com?} put temp_humi.py main.py</code> （ここで，<code>{com?}</code> は手順 4 にて確認した COM を記入）と入力することで，M5Stack に micropython のプログラムを書き込む</li>
+<li>M5Stack 側にて <code>Wi-Fi Connecting</code> 画面が立ち上がり，<code>M5Burner</code> にて設定した Wi-Fi に接続を試み</li>
+<li>失敗した場合は M5Stack 中央のボタンにて <code>Retry</code> を行うか，側面の赤いボタンを押下し再起動する</li>
+<li>手順 11 の Wi-Fi 接続が成功すると，M5Stack の画面に，時刻／温度／湿度が約 1 秒おきに更新／表示される（手順 13 まで成功していれば，usb ケーブル経由で PC 側からシリアル出力の取得が可能となる）</li>
+</ol>
+<h2>Usage</h2>
+<p>上記環境を構築したうえで，M5Stack と接続している PC 上のコマンドプロンプトやターミナルにて <code>streamlit run real_time_monitoring.py</code> と実行すると，PC 規定の web ブラウザにて web アプリのモニタリングソフトが立ち上がります．</p>
+<h2>Author</h2>
+<ul>
+<li>KazutoMakino</li>
+<li><a href="https://github.com/KazutoMakino">github</a></li>
+<li><a href="https://slash-z.com/">個人ブログ</a></li>
+<li>mail to: <code>slash-z-sludge@slash-z.com</code></li>
+</ul>
+<h2>License</h2>
+<p>これらのコード／データは <a href="https://opensource.org/licenses/mit-license.php">MIT license</a> とします．</p>
